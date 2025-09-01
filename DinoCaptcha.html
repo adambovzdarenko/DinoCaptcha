@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DinoCaptcha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #captchaBtn {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        #captchaModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        #captchaBox {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        #game {
+            position: relative;
+            width: 400px;
+            height: 150px;
+            border: 2px solid #000;
+            margin: 10px auto;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        #dino {
+            position: absolute;
+            bottom: 5px; /* raised by 5px */
+            left: 40px;
+            width: 40px;
+            height: 40px;
+            background: url("img/dino.png") no-repeat center/contain;
+        }
+        .cactus {
+            position: absolute;
+            bottom: 0;
+            right: -40px;
+            width: 31px;   /* 25 * 1.25 */
+            height: 50px;  /* 40 * 1.25 */
+            background: url("img/cactus.png") no-repeat center/contain;
+        }
+        #jumpBtn, #retryBtn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #retryBtn {
+            display: none;
+        }
+        #gameOver {
+            font-size: 18px;
+            color: red;
+            display: none;
+            margin-top: 5px;
+        }
+        #success {
+            font-size: 18px;
+            color: green;
+            display: none;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <button id="captchaBtn">Verify Captcha</button>
+
+    <div id="captchaModal">
+        <div id="captchaBox">
+            <h3>Please prove you are human</h3>
+            <div id="game">
+                <div id="dino"></div>
+                <div class="cactus" id="cactus"></div>
+            </div>
+            <button id="jumpBtn">Jump!</button>
+            <button id="retryBtn">Retry</button>
+            <div id="gameOver">💀 Game Over!</div>
+            <div id="success">✅ Captcha Passed!</div>
+        </div>
+    </div>
+
+    <script>
+        const captchaBtn = document.getElementById("captchaBtn");
+        const captchaModal = document.getElementById("captchaModal");
+        const dino = document.getElementById("dino");
+        const cactus = document.getElementById("cactus");
+        const jumpBtn = document.getElementById("jumpBtn");
+        const retryBtn = document.getElementById("retryBtn");
+        const gameOverText = document.getElementById("gameOver");
+        const successText = document.getElementById("success");
+
+        let isJumping = false;
+        let isAlive = true;
+        let jumpHeight = 0;
+        let score = 0;
+        let cactusX = 400;
+        let animationFrame;
+
+        // Open modal
+        captchaBtn.addEventListener("click", () => {
+            captchaModal.style.display = "flex";
+            startGame();
+        });
+
+        // Jump function
+        function jump() {
+            if (isJumping) return;
+            isJumping = true;
+
+            let velocity = 8;      // initial jump speed
+            let gravity = 0.4;     // gravity effect
+
+            function jumpLoop() {
+                if (!isJumping) return;
+
+                jumpHeight += velocity;
+                velocity -= gravity;
+
+                if (jumpHeight <= 0) {
+                    jumpHeight = 0;
+                    isJumping = false;
+                }
+
+                dino.style.bottom = (5 + jumpHeight) + "px";
+
+                if (isJumping) requestAnimationFrame(jumpLoop);
+            }
+
+            requestAnimationFrame(jumpLoop);
+        }
+
+        jumpBtn.addEventListener("click", jump);
+
+        // Retry
+        retryBtn.addEventListener("click", () => {
+            startGame();
+        });
+
+        // Game loop
+        function startGame() {
+            isAlive = true;
+            score = 0;
+            cactusX = 400;
+            jumpHeight = 0;
+            dino.style.bottom = "5px";
+            gameOverText.style.display = "none";
+            successText.style.display = "none";
+            retryBtn.style.display = "none";
+
+            function gameLoop() {
+                if (!isAlive) return;
+
+                cactusX -= 3;
+                if (cactusX < -40) {
+                    cactusX = 400 + Math.random() * 200; // random spacing
+                    score++;
+                    if (score >= 3) {
+                        isAlive = false;
+                        successText.style.display = "block";
+                        return;
+                    }
+                }
+                cactus.style.left = cactusX + "px";
+
+                // Collision detection
+                if (cactusX < 80 && cactusX > 40 && jumpHeight < 30) {
+                    isAlive = false;
+                    gameOverText.style.display = "block";
+                    retryBtn.style.display = "inline-block";
+                }
+
+                animationFrame = requestAnimationFrame(gameLoop);
+            }
+            cancelAnimationFrame(animationFrame);
+            gameLoop();
+        }
+    </script>
+</body>
+</html>
