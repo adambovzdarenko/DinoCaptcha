@@ -8,10 +8,10 @@ jump over three cactuses to prove you're human.
 
 ## Features
 - 🦖 Dino jumps with a smooth animation  
-- 🌵 Randomly spaced cactuses (scaled 1.25x larger than default)  
+- 🌵 Randomly spaced cactuses
 - ✅ Pass after successfully avoiding 3 obstacles  
-- 💀 Game Over screen with **Retry** option  
-- 🎮 Runs in a modal window, triggered by a "Verify Captcha" button  
+- 💀 Game Over screen with **Retry** option
+- 🎮 Runs in a modal window, triggered by a "Verify Captcha" button
 
 ---
 
