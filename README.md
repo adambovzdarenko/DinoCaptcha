@@ -1,5 +1,7 @@
 # DinoCaptcha 🦖🌵
 
+<img width="515" height="353" alt="image" src="https://github.com/user-attachments/assets/bf26c106-1bca-45a8-8870-f4ec5026a8e9" />
+
 DinoCaptcha is a browser-based CAPTCHA system inspired by the Chrome Dino game.  
 Instead of solving puzzles or checking boxes, users play a short mini-game:  
 jump over three cactuses to prove you're human.  
